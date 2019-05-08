@@ -1,32 +1,30 @@
-require 'nokogiri'
 require 'selenium-webdriver'
 require 'open-uri'
 
-url = "https://www.sdvx.in/sort/sort_17.htm"
-
 driver = Selenium::WebDriver.for :chrome
-driver.navigate.to url
-
-#nokogiri初期設定
-
-charset = nil
-html = open(url) do |f|
-	charset = f.charset
-	f.read
-end
-
-doc = Nokogiri::HTML.parse(html,nil,charset)
 
 p "------------------取得開始------------------"
 
+j = 20
 
-p "--タイトル--"
-p doc.title
+while j > 0
+	url = "https://www.sdvx.in/sort/sort_#{j}.htm"
+	driver.navigate.to url
+	songs = driver.find_elements(:class => "f1")
 
-p "--曲名--"
-songs = driver.find_elements(:class => "f1")
+	p "--LV.#{j}--"
+	i = 0
 	songs.each do |e|
 		puts e.text
+		i += 1
+	end
+
+	j -= 1
+
+	p "--------"
+	p "取得数：#{i}"
+
+	sleep 2
 end
 
 driver.quit
